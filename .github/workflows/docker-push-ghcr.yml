@@ -6,9 +6,28 @@ on:
     branches: [main]
 jobs:
   push:
-    if: ${{ github.repository != 'networkservicemesh/cmd-template' && (github.event.workflow_run.conclusion == 'success' && github.actor == 'nsmbot' || github.event_name == 'push') }}
-    uses: networkservicemesh/.github/.github/workflows/docker-release.yaml@main
-    with:
-      tag: "latest"
-    secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
+    name: push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Login to GitHub Container Registry
+        id: docker_login
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          file: Dockerfile
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}"
