@@ -21,7 +21,7 @@ You can build the docker container by running:
 docker build .
 ```
 
-To build for multiple architectures:
+To build for multiple architectures locally:
 
 ```bash
 docker buildx build --platform linux/amd64,linux/arm64 -t <NAMESPACE>/cmd-return . --push
