@@ -7,8 +7,4 @@ on:
 jobs:
   push:
     if: ${{ github.repository != 'networkservicemesh/cmd-template' && (github.event.workflow_run.conclusion == 'success' && github.actor == 'nsmbot' || github.event_name == 'push') }}
-    uses: networkservicemesh/.github/.github/workflows/docker-release.yaml@main
-    with:
-      tag: "latest"
-    secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
+    uses: networkservicemesh/.github/.github/workflows/docker-push-ghcr.yaml@main
